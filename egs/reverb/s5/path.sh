@@ -1,4 +1,5 @@
-export KALDI_ROOT=`pwd`/../../..
+export KALDI_ROOT=/opt/kaldi
+#export KALDI_ROOT=`pwd`/../../..
 [ -f $KALDI_ROOT/tools/env.sh ] && . $KALDI_ROOT/tools/env.sh
 [ -f $KALDI_ROOT/tools/extras/env.sh ] && . $KALDI_ROOT/tools/extras/env.sh
 export PATH=$PWD/utils/:$KALDI_ROOT/tools/openfst/bin:$PWD:$PATH
