@@ -57,7 +57,8 @@ if [[ $(hostname -f) == *.clsp.jhu.edu ]] ; then
   # It is assumed that there will be a 'wsj0' subdirectory
   # within the top-level corpus directory
 else
-  echo "Set the data directory locations." && exit 1;
+  export wsj0=data/lm_tg_5k.arpa.gz
+  # echo "Set the data directory locations." && exit 1;
 fi
 
 #training set and test set

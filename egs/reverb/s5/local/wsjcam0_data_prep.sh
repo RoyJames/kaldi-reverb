@@ -36,7 +36,7 @@ fi
 cd $dir
 
 WSJ=$1
-wsj0_dir=$2
+wsj0_lm=$2
 if [ ! -d "$WSJ" ]; then
     echo Could not find directory $WSJ! Check pathnames in corpus.sh!
     exit 1
@@ -119,9 +119,9 @@ done
 # REVERB language model is bcb05cnp
 # We also use tri-gram
 echo "Copy language model"
-cp $wsj0_dir/wsj0/doc/lng_modl/base_lm/bcb05cnp.z $lmdir/lm_bg_5k.arpa.gz || exit 1;
-chmod 644 $lmdir/lm_bg_5k.arpa.gz
-cp $wsj0_dir/wsj0/doc/lng_modl/base_lm/tcb05cnp.z $lmdir/lm_tg_5k.arpa.gz || exit 1
+#cp $wsj0_dir/wsj0/doc/lng_modl/base_lm/bcb05cnp.z $lmdir/lm_bg_5k.arpa.gz || exit 1;
+#chmod 644 $lmdir/lm_bg_5k.arpa.gz
+cp $wsj0_lm $lmdir/lm_tg_5k.arpa.gz || exit 1
 chmod 644 $lmdir/lm_tg_5k.arpa.gz
 
 echo "Data preparation succeeded"
