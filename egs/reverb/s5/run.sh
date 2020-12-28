@@ -38,7 +38,7 @@ fi
 stage=0
 nch_se=8
 # flag for turing on computation of dereverberation measures
-compute_se=true
+compute_se=false
 # please make sure that you or your institution have the license to report PESQ before turning on the below flag
 enable_pesq=false
 
