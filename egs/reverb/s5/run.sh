@@ -57,9 +57,9 @@ if [[ $(hostname -f) == *.clsp.jhu.edu ]] ; then
   # It is assumed that there will be a 'wsj0' subdirectory
   # within the top-level corpus directory
 else
-  reverb=/scratch/ASR_Data/REVERB_DATA_OFFICIAL
-  export wsjcam0=/scratch/ASR_Data/LDC95S24
-  export wsj0=/scratch/ASR_Data/lm_tg_5k.arpa.gz
+  reverb=/scratch/zhy/ASR_Data/REVERB_DATA_OFFICIAL
+  export wsjcam0=/scratch/zhy/ASR_Data/LDC95S24
+  export wsj0=/scratch/zhy/ASR_Data/lm_tg_5k.arpa.gz
   # echo "Set the data directory locations." && exit 1;
 fi
 
