@@ -26,10 +26,16 @@ set -e -o pipefail
 
 wsjcam0=$1
 mkdir -p ${wavdir}
+chmod o+rwx -R ${wavdir}
 
 # tool directory
 dir=${PWD}/data/local/reverb_tools
 mkdir -p ${dir}
+
+# check existing runmat.m
+if [ -e $dir/reverb_tools_for_Generate_mcTrainData/run_mat.m ]; then
+    echo "We assume that you have executed run_mat.m already so will continue" && exit 0;
+fi
 
 # Download tools
 URL1="http://reverb2014.dereverberation.com/tools/reverb_tools_for_Generate_mcTrainData.tgz"
@@ -71,14 +77,16 @@ echo "generated ${nwav} WAV files (it must be 7861)"
 reverb_tr_dir=${wavdir}/REVERB_WSJCAM0_tr
 cp local/Generate_mcTrainData_cut.m $dir/reverb_tools_for_Generate_mcTrainData/
 pushd $dir/reverb_tools_for_Generate_mcTrainData/
-tmpdir=`mktemp -d tempXXXXX `
-tmpmfile=$tmpdir/run_mat.m
+#tmpdir=`mktemp -d tempXXXXX `
+#tmpmfile=$tmpdir/run_mat.m
+tmpmfile=run_mat.m
 cat <<EOF > $tmpmfile
 addpath(genpath('.'))
 Generate_mcTrainData_cut('$wavdir/WSJCAM0', '$reverb_tr_dir');
 EOF
-cat $tmpmfile | matlab -nodisplay
-rm -rf $tmpdir
+#cat $tmpmfile | matlab -nodisplay
+#rm -rf $tmpdir
 popd
 
-echo "Successfully generated multi-condition training data and stored it in $reverb_tr_dir." && exit 0;
+echo "Please execute $tmpmfile manually on a host with matlab and then resume this recipe." && exit 1;
+#echo "Successfully generated multi-condition training data and stored it in $reverb_tr_dir." && exit 0;
