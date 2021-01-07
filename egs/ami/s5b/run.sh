@@ -26,7 +26,7 @@ nmics=$(echo $mic | sed 's/[a-z]//g') # e.g. 8 for mdm8.
 set -euo pipefail
 
 # Path where AMI gets downloaded (or where locally available):
-AMI_DIR=$PWD/wav_db # Default,
+AMI_DIR=/scratch/zhy/ASR_Data/AMI # Default,
 case $(hostname -d) in
   fit.vutbr.cz) AMI_DIR=/mnt/matylda5/iveselyk/KALDI_AMI_WAV ;; # BUT,
   clsp.jhu.edu) AMI_DIR=/export/corpora4/ami/amicorpus ;; # JHU,
