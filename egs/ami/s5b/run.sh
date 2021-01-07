@@ -166,7 +166,8 @@ fi
 if [ $stage -le 11 ]; then
   ali_opt=
   [ "$mic" != "ihm" ] && ali_opt="--use-ihm-ali true"
-  local/chain/run_tdnn.sh $ali_opt --mic $mic
+  # local/chain/run_tdnn.sh $ali_opt --mic $mic
+  local/chain/multi_condition/run_tdnn.sh -mic $mic
 fi
 
 if [ $stage -le 12 ]; then
