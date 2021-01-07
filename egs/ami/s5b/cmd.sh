@@ -10,10 +10,10 @@
 # conf/queue.conf in http://kaldi-asr.org/doc/queue.html for more information,
 # or search for the string 'default_config' in utils/queue.pl or utils/slurm.pl.
 
-export train_cmd="queue.pl --mem 1G"
-export decode_cmd="queue.pl --mem 2G"
+export train_cmd="run.pl --mem 1G"
+export decode_cmd="run.pl --mem 2G"
 # the use of cuda_cmd is deprecated, used only in 'nnet1',
-export cuda_cmd="queue.pl --gpu 1 --mem 20G"
+export cuda_cmd="run.pl --gpu 1 --mem 20G"
 
 if [[ "$(hostname -f)" == "*.fit.vutbr.cz" ]]; then
   queue_conf=$HOME/queue_conf/default.conf # see example /homes/kazi/iveselyk/queue_conf/default.conf,
