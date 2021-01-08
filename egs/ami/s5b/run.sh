@@ -16,7 +16,7 @@
 mic=ihm
 
 # Train systems,
-nj=30 # number of parallel jobs,
+nj=60 # number of parallel jobs,
 stage=1
 . utils/parse_options.sh
 
@@ -167,7 +167,7 @@ if [ $stage -le 11 ]; then
   ali_opt=
   [ "$mic" != "ihm" ] && ali_opt="--use-ihm-ali true"
   # local/chain/run_tdnn.sh $ali_opt --mic $mic
-  local/chain/multi_condition/run_tdnn.sh -mic $mic
+  local/chain/multi_condition/run_tdnn.sh $ali_opt --mic $mic
 fi
 
 if [ $stage -le 12 ]; then
