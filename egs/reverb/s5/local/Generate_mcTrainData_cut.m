@@ -5,7 +5,7 @@ function Generate_mcTrainData_cut(WSJ_dir_name, save_dir)
 %                  (*Directory structure for wsjcam0 corpus to be kept as it is after obtaining it from LDC. 
 %                    Otherwise this script does not work.)
 %
-% This function generates multi-condition traiing data
+% This function generates multi-condition training data
 % based on the following items:
 %  1. wsjcam0 corpus (WAV files)
 %  2. room impulse responses (ones under ./RIR/)
@@ -36,31 +36,9 @@ flist1='etc/audio_si_tr.lst';
 %
 % List of RIRs
 %
-num_RIRvar=24;
-RIR_sim1='./RIR/RIR_SmallRoom1_near_AnglA.wav'; 
-RIR_sim2='./RIR/RIR_SmallRoom1_near_AnglB.wav'; 
-RIR_sim3='./RIR/RIR_SmallRoom1_far_AnglA.wav';  
-RIR_sim4='./RIR/RIR_SmallRoom1_far_AnglB.wav';  
-RIR_sim5='./RIR/RIR_MediumRoom1_near_AnglA.wav';
-RIR_sim6='./RIR/RIR_MediumRoom1_near_AnglB.wav';
-RIR_sim7='./RIR/RIR_MediumRoom1_far_AnglA.wav'; 
-RIR_sim8='./RIR/RIR_MediumRoom1_far_AnglB.wav'; 
-RIR_sim9='./RIR/RIR_LargeRoom1_near_AnglA.wav'; 
-RIR_sim10='./RIR/RIR_LargeRoom1_near_AnglB.wav';
-RIR_sim11='./RIR/RIR_LargeRoom1_far_AnglA.wav'; 
-RIR_sim12='./RIR/RIR_LargeRoom1_far_AnglB.wav'; 
-RIR_sim13='./RIR/RIR_SmallRoom2_near_AnglA.wav';
-RIR_sim14='./RIR/RIR_SmallRoom2_near_AnglB.wav';
-RIR_sim15='./RIR/RIR_SmallRoom2_far_AnglA.wav'; 
-RIR_sim16='./RIR/RIR_SmallRoom2_far_AnglB.wav'; 
-RIR_sim17='./RIR/RIR_MediumRoom2_near_AnglA.wav';
-RIR_sim18='./RIR/RIR_MediumRoom2_near_AnglB.wav';
-RIR_sim19='./RIR/RIR_MediumRoom2_far_AnglA.wav'; 
-RIR_sim20='./RIR/RIR_MediumRoom2_far_AnglB.wav'; 
-RIR_sim21='./RIR/RIR_LargeRoom2_near_AnglA.wav'; 
-RIR_sim22='./RIR/RIR_LargeRoom2_near_AnglB.wav'; 
-RIR_sim23='./RIR/RIR_LargeRoom2_far_AnglA.wav';  
-RIR_sim24='./RIR/RIR_LargeRoom2_far_AnglB.wav';  
+RIR_dir = './RIR';
+RIR_List = dir(strcat(RIR_dir, '/*.wav'));
+num_RIRvar=length(RIR_List);
 
 %
 % List of noise
@@ -115,7 +93,7 @@ for nlist=1:1
         x=audioread([WSJ_dir_name, '/data/', fname, '.wav'])';
         
         % load RIR and noise for "THIS" utterance
-        eval(['RIR=audioread(RIR_sim',num2str(rcount),');']);
+        RIR=audioread(strcat(RIR_List(rcount).folder,'/',RIR_List(rcount).name));
         eval(['NOISE=audioread([noise_sim',num2str(ceil(rcount/4)),',''_',num2str(ncount),'.wav'']);']);
 
         % Generate 8ch noisy reverberant data        
