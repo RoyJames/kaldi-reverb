@@ -7,6 +7,7 @@
 
 # Begin configuration section.
 wavdir=${PWD}/wav
+rirdir=${PWD}/local/sub_samples
 # End configuration section
 
 . ./utils/parse_options.sh  # accept options.. you can run this run.sh with the
@@ -82,8 +83,9 @@ pushd $dir/reverb_tools_for_Generate_mcTrainData/
 tmpmfile=run_mat.m
 cat <<EOF > $tmpmfile
 addpath(genpath('.'))
-Generate_mcTrainData_cut('$wavdir/WSJCAM0', '$reverb_tr_dir');
+Generate_mcTrainData_cut('$wavdir/WSJCAM0', '$rirdir', '$reverb_tr_dir');
 EOF
+
 #cat $tmpmfile | matlab -nodisplay
 #rm -rf $tmpdir
 popd
