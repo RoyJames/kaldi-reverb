@@ -1,4 +1,4 @@
-function Generate_mcTrainData_cut(WSJ_dir_name, save_dir)
+function Generate_mcTrainData_cut(WSJ_dir_name, RIR_dir, save_dir)
 %
 % Input variables:
 %    WSJ_dir_name: string name of WAV file directory converted from original wsjcam0 SPHERE files
@@ -36,7 +36,6 @@ flist1='etc/audio_si_tr.lst';
 %
 % List of RIRs
 %
-RIR_dir = './RIR';
 RIR_List = dir(strcat(RIR_dir, '/*.wav'));
 num_RIRvar=length(RIR_List);
 
