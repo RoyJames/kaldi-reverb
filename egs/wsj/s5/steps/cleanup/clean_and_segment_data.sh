@@ -1,4 +1,4 @@
-#!/usr/bin/env bash
+#!/bin/bash
 
 # Copyright 2016  Vimal Manohar
 #           2016  Johns Hopkins University (author: Daniel Povey)
@@ -6,9 +6,9 @@
 
 # This script demonstrates how to re-segment training data selecting only the
 # "good" audio that matches the transcripts.
-# The basic idea is to decode with an existing in-domain GMM acoustic model, and
-# a biased language model built from the reference transcript, and then work out
-# the segmentation from a ctm like file.
+# The basic idea is to decode with an existing in-domain acoustic model, and a
+# biased language model built from the reference, and then work out the
+# segmentation from a ctm like file.
 
 set -e -o pipefail
 
@@ -22,7 +22,6 @@ segmentation_opts=
 
 . ./path.sh
 . utils/parse_options.sh
-
 
 if [ $# -ne 5 ]; then
   echo "Usage: $0 [options] <data> <lang> <srcdir> <dir> <cleaned-data>"
@@ -179,7 +178,7 @@ if [ $stage -le 8 ]; then
   # the apply_map command below gives us lines of the form 'utt dur-from-$data/utt2dur dur-from-utt2dur.from_ctm',
   # e.g. AMI_EN2001a_H00_MEE068_0000557_0000594 0.37 0.35
   utils/apply_map.pl -f 1 <(awk '{print $1,$1,$2}' <$data/utt2dur) <$dir/utt2dur.from_ctm  | \
-    awk '{printf("%.3f\n", $2 - $3); }' | sort | uniq -c | sort -nr > $dir/padding_frequencies
+    awk '{printf("%.3f\n", $2 - $3); }' | sort | uniq -c > $dir/padding_frequencies
   # there are values other than the most-frequent one (0.02) in there because
   # of wav files that were shorter than the segment info.
   padding=$(head -n 1 $dir/padding_frequencies | awk '{print $2}')
@@ -187,8 +186,13 @@ if [ $stage -le 8 ]; then
   echo $padding >$dir/segment_end_padding
 fi
 
+if [ $stage -le 9 ]; then
+  # use the baseline segmentation
+  cp -rf ../s5b/exp/ihm/tri3_cleaned_work/segments exp/ihm/tri3_cleaned_work
+  cp -rf ../s5b/exp/ihm/tri3_cleaned_work/text exp/ihm/tri3_cleaned_work
+fi
 
-if [ $stage -le 8 ]; then
+if [ $stage -le 9 ]; then
   echo "$0: based on the segments and text file in $dir/segments and $dir/text, creating new data-dir in $data_out"
   padding=$(cat $dir/segment_end_padding)  # e.g. 0.02
   utils/data/subsegment_data_dir.sh --segment-end-padding $padding ${data} $dir/segments $dir/text $data_out
@@ -206,7 +210,7 @@ fi
 
 if $cleanup; then
   echo "$0: cleaning up intermediate files"
-  rm -r $dir/graphs/fsts $dir/graphs/HCLG.fsts.scp || true
+  rm -r $dir/fsts $dir/HCLG.fsts.scp || true
   rm -r $dir/lats/lat.*.gz $dir/lats/split_fsts || true
   rm $dir/lattice_oracle/lat.*.gz || true
 fi
