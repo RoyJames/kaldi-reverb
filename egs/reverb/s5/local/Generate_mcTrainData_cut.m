@@ -93,7 +93,7 @@ for nlist=1:1
         
         % load RIR and noise for "THIS" utterance
         RIR=audioread(strcat(RIR_List(rcount).folder,'/',RIR_List(rcount).name));
-        eval(['NOISE=audioread([noise_sim',num2str(ceil(rcount/4)),',''_',num2str(ncount),'.wav'']);']);
+        eval(['NOISE=audioread([noise_sim',num2str(mod(floor(rcount/4), num_NOISEvar)+1),',''_',num2str(ncount),'.wav'']);']);
 
         % Generate 8ch noisy reverberant data        
         y=gen_obs(x,RIR,NOISE,SNRdB);
@@ -108,8 +108,9 @@ for nlist=1:1
 
         % save the data
 
-        y=y/4; % common normalization to all the data to prevent clipping
+        %y=y/4; % common normalization to all the data to prevent clipping
                % denominator was decided experimentally
+	y=y/max(abs(y(:)));
 
         for ch=1:8
 	    outfilename = [save_dir_tr, fname, '_ch', num2str(ch), '.wav'];
@@ -133,7 +134,7 @@ x=x';
 [val,delay]=max(RIR(:,1));
 before_impulse=floor(16000*0.001);
 after_impulse=floor(16000*0.05);
-RIR_direct=RIR(delay-before_impulse:delay+after_impulse,1);
+RIR_direct=RIR(max(delay-before_impulse,1):delay+after_impulse,1);
 direct_signal=fconv(x,RIR_direct);
 
 % obtain reverberant speech
