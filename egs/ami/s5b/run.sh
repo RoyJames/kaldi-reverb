@@ -124,13 +124,13 @@ if [ $stage -le 7 ]; then
   steps/align_fmllr.sh --nj $nj --cmd "$train_cmd" \
     data/$mic/train data/lang exp/$mic/tri2 exp/$mic/tri2_ali
   # Decode
-   graph_dir=exp/$mic/tri2/graph_${LM}
-  $decode_cmd --mem 4G $graph_dir/mkgraph.log \
-    utils/mkgraph.sh data/lang_${LM} exp/$mic/tri2 $graph_dir
-  steps/decode.sh --nj $nj --cmd "$decode_cmd" --config conf/decode.conf \
-    $graph_dir data/$mic/dev exp/$mic/tri2/decode_dev_${LM}
-  steps/decode.sh --nj $nj --cmd "$decode_cmd" --config conf/decode.conf \
-    $graph_dir data/$mic/eval exp/$mic/tri2/decode_eval_${LM}
+  # graph_dir=exp/$mic/tri2/graph_${LM}
+  #$decode_cmd --mem 4G $graph_dir/mkgraph.log \
+  #  utils/mkgraph.sh data/lang_${LM} exp/$mic/tri2 $graph_dir
+  #steps/decode.sh --nj $nj --cmd "$decode_cmd" --config conf/decode.conf \
+  #  $graph_dir data/$mic/dev exp/$mic/tri2/decode_dev_${LM}
+  #steps/decode.sh --nj $nj --cmd "$decode_cmd" --config conf/decode.conf \
+  #  $graph_dir data/$mic/eval exp/$mic/tri2/decode_eval_${LM}
 fi
 
 
@@ -142,7 +142,7 @@ if [ $stage -le 8 ]; then
     data/$mic/train data/lang exp/$mic/tri3 exp/$mic/tri3_ali
 fi
 
-if [ $stage -le 9 ]; then
+if [ $stage -le 0 ]; then
   # Decode the fMLLR system.
   graph_dir=exp/$mic/tri3/graph_${LM}
   $decode_cmd --mem 4G $graph_dir/mkgraph.log \
@@ -166,11 +166,11 @@ fi
 if [ $stage -le 11 ]; then
   ali_opt=
   [ "$mic" != "ihm" ] && ali_opt="--use-ihm-ali true"
-  # local/chain/run_tdnn.sh $ali_opt --mic $mic
-  local/chain/multi_condition/run_tdnn.sh $ali_opt --mic $mic
+  local/chain/run_tdnn.sh $ali_opt --mic $mic
+  # local/chain/multi_condition/run_tdnn.sh $ali_opt --mic $mic
 fi
 
-if [ $stage -le 12 ]; then
+if [ $stage -le 0 ]; then
 #  the following shows how you would run the nnet3 system; we comment it out
 #  because it's not as good as the chain system.
 #  ali_opt=
