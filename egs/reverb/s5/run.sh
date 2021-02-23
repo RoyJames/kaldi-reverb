@@ -87,13 +87,13 @@ if [ ${stage} -le 1 ]; then
   local/prepare_real_data.sh --wavdir ${wavdir} ${reverb}
 fi
 
-if [ $stage -le 2 ]; then
+if [ $stage -le -1 ]; then
   local/run_wpe.sh --cmd "$train_cmd"
   local/run_beamform.sh --cmd "$train_cmd" ${wavdir}/WPE/
 fi
 
 # Compute dereverberation scores
-if [ $stage -le 3 ] && $compute_se; then
+if [ $stage -le -1 ] && $compute_se; then
   if [ ! -d local/REVERB_scores_source ] || [ ! -d local/REVERB_scores_source/REVERB-SPEENHA.Release04Oct/evaltools/SRMRToolbox ] || [ ! -f local/PESQ ]; then
     # download and install speech enhancement evaluation tools
     local/download_se_eval_tool.sh
@@ -158,11 +158,11 @@ fi
 
 if [ $stage -le 10 ]; then
   utils/mkgraph.sh data/lang_test_$lm exp/tri2 exp/tri2/graph
-  for dset in ${test_sets}; do
-    steps/decode.sh --nj $decode_nj --cmd "$decode_cmd"  --num-threads 4 \
-		    exp/tri2/graph data/${dset} exp/tri2/decode_${dset} &
-  done
-  wait
+#  for dset in ${test_sets}; do
+#    steps/decode.sh --nj $decode_nj --cmd "$decode_cmd"  --num-threads 4 \
+#		    exp/tri2/graph data/${dset} exp/tri2/decode_${dset} &
+#  done
+#  wait
 fi
 
 if [ $stage -le 11 ]; then
@@ -175,11 +175,11 @@ fi
 
 if [ $stage -le 12 ]; then
   utils/mkgraph.sh data/lang_test_$lm exp/tri3 exp/tri3/graph
-  for dset in ${test_sets}; do
-    steps/decode_fmllr.sh --nj $decode_nj --cmd "$decode_cmd"  --num-threads 4 \
-			  exp/tri3/graph data/${dset} exp/tri3/decode_${dset} &
-  done
-  wait
+#  for dset in ${test_sets}; do
+#    steps/decode_fmllr.sh --nj $decode_nj --cmd "$decode_cmd"  --num-threads 4 \
+#			  exp/tri3/graph data/${dset} exp/tri3/decode_${dset} &
+#  done
+#  wait
 fi
 
 if [ $stage -le 13 ]; then
