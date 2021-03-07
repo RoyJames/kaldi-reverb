@@ -130,7 +130,7 @@ final_lm=`cat data/local/lm/final_lm`
 LM=$final_lm.pr1-7
 
 
-if [ $stage -le 5 ]; then
+if [ $stage -le -1 ]; then
   graph_dir=exp/$mic/${gmm}_${cleanup_affix}/graph_$LM
   nj_dev=$(cat data/$mic/dev/spk2utt | wc -l)
   nj_eval=$(cat data/$mic/eval/spk2utt | wc -l)
