@@ -151,10 +151,10 @@ fi
 if [ $stage -le 14 ]; then
   echo "$0: copying baseline ali and lats."
   mv exp/ihm/tri3_cleaned_ali_train_cleaned_sp_comb exp/ihm/tri3_cleaned_ali_train_cleaned_sp_comb.orig
-  ln -s ../s5b/exp/ihm/tri3_cleaned_ali_train_cleaned_sp_comb exp/ihm/
+  ln -s ../../../s5b/exp/ihm/tri3_cleaned_ali_train_cleaned_sp_comb exp/ihm/
 
   mv exp/ihm/chain_cleaned/tri3_cleaned_train_cleaned_sp_comb_lats exp/ihm/chain_cleaned/tri3_cleaned_train_cleaned_sp_comb_lats.orig
-  ln -s ../s5b/exp/ihm/chain_cleaned/tri3_cleaned_train_cleaned_sp_comb_lats exp/ihm/chain_cleaned/
+  ln -s ../../../../s5b/exp/ihm/chain_cleaned/tri3_cleaned_train_cleaned_sp_comb_lats exp/ihm/chain_cleaned/
 fi
 
 if [ $stage -le 14 ]; then
