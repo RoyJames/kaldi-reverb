@@ -60,7 +60,7 @@ fi
 
 if [ $stage -le 12 ]; then
   echo "== Stage 12 =="
-  local/test_ihm_on_sdm1_DNN.sh --stage 0 || exit 1
+  local/test_ihm_on_sdm1_DNN.sh --stage 0 --nj $nj || exit 1
 fi
 
 exit 0
