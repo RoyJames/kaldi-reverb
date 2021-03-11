@@ -1,19 +1,21 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
-# same as 1h but replacing proportional-shrink with l2-regularize.
-# The results match those from 1h.
+#  1j is same as swbd 7q. It uses modified topology with resnet-style skip connections, more layers,
+#  skinnier bottlenecks.
 
-# local/chain/tuning/run_tdnn_1i.sh --mic sdm1 --use-ihm-ali true --train-set train_cleaned  --gmm tri3_cleaned
+# local/chain/tuning/run_tdnn_1j.sh --mic sdm1 --use-ihm-ali true --train-set train_cleaned  --gmm tri3_cleaned
 
-# local/chain/compare_wer_general.sh sdm1 tdnn1h_sp_bi_ihmali tdnn1i_sp_bi_ihmali
-# System                tdnn1h_sp_bi_ihmali tdnn1i_sp_bi_ihmali
-# WER on dev        36.6      36.6
-# WER on eval        40.5      40.6
-# Final train prob      -0.193585 -0.196231
-# Final valid prob      -0.265758 -0.265572
-# Final train prob (xent)      -2.32497  -2.48061
-# Final valid prob (xent)      -2.60964  -2.71794
+# local/chain/compare_wer_general.sh sdm1 tdnn1i_sp_bi_ihmali tdnn1j_sp_bi_ihmali
+# System                tdnn1i_sp_bi_ihmali tdnn1i_sp_bi_ihmali
+# WER on dev                   36.6                  31.7
+# WER on eval                  40.6                  35.1
+# Final train prob             -0.196231             -0.114088
+# Final valid prob             -0.265572             -0.214282
+# Final train prob (xent)      -2.48061              -1.37987
+# Final valid prob (xent)      -2.71794              -1.8639
 
+# steps/info/chain_dir_info.pl exp/sdm1/chain_cleaned/tdnn1j_sp_bi_ihmali
+# exp/sdm1/chain_cleaned/tdnn1j_sp_bi_ihmali: num-iters=327 nj=2..12 num-params=34.3M dim=80+100->3728 combine=-0.126->-0.124 (over 4) xent:train/valid[217,326,final]=(-1.69,-1.43,-1.38/-2.06,-1.93,-1.86) logprob:train/valid[217,326,final]=(-0.143,-0.120,-0.114/-0.226,-0.218,-0.214)
 
 set -e -o pipefail
 # First the options that are passed through to run_ivector_common.sh
@@ -26,18 +28,19 @@ use_ihm_ali=false
 train_set=train_cleaned
 gmm=tri3_cleaned  # the gmm for the target data
 ihm_gmm=tri3  # the gmm for the IHM system (if --use-ihm-ali true).
-num_threads_ubm=16
+num_threads_ubm=32
 ivector_transform_type=pca
 nnet3_affix=_cleaned  # cleanup affix for nnet3 and chain dirs, e.g. _cleaned
-num_epochs=18
-remove_egs=false
+num_epochs=15
+remove_egs=true
 
 # The rest are configs specific to this script.  Most of the parameters
 # are just hardcoded at this level, in the commands below.
 train_stage=-10
 tree_affix=  # affix for tree directory, e.g. "a" or "b", in case we change the configuration.
-tdnn_affix=1i  #affix for TDNN directory, e.g. "a" or "b", in case we change the configuration.
+tdnn_affix=1j  #affix for TDNN directory, e.g. "a" or "b", in case we change the configuration.
 common_egs_dir=  # you can set this to use previously dumped egs.
+dropout_schedule='0,0@0.20,0.5@0.50,0'
 
 # End configuration section.
 echo "$0 $@"  # Print the command line for logging
@@ -45,6 +48,7 @@ echo "$0 $@"  # Print the command line for logging
 . ./cmd.sh
 . ./path.sh
 . ./utils/parse_options.sh
+
 
 if ! cuda-compiled; then
   cat <<EOF && exit 1
@@ -58,6 +62,7 @@ if [ $stage -le 10 ]; then
   local/nnet3/run_ivector_common.sh --stage $stage \
                                     --mic $mic \
                                     --nj $nj \
+                                    --hires_suffix 80 \
                                     --min-seg-len $min_seg_len \
                                     --train-set $train_set \
                                     --gmm $gmm \
@@ -149,15 +154,6 @@ if [ $stage -le 13 ]; then
 fi
 
 if [ $stage -le 14 ]; then
-  echo "$0: copying baseline ali and lats."
-  mv exp/ihm/tri3_cleaned_ali_train_cleaned_sp_comb exp/ihm/tri3_cleaned_ali_train_cleaned_sp_comb.orig
-  ln -s ../../../s5b/exp/ihm/tri3_cleaned_ali_train_cleaned_sp_comb exp/ihm/
-
-  mv exp/ihm/chain_cleaned/tri3_cleaned_train_cleaned_sp_comb_lats exp/ihm/chain_cleaned/tri3_cleaned_train_cleaned_sp_comb_lats.orig
-  ln -s ../../../../s5b/exp/ihm/chain_cleaned/tri3_cleaned_train_cleaned_sp_comb_lats exp/ihm/chain_cleaned/
-fi
-
-if [ $stage -le 14 ]; then
   # Build a tree using our new topology.  We know we have alignments for the
   # speed-perturbed data (local/nnet3/run_ivector_common.sh made them), so use
   # those.
@@ -173,19 +169,21 @@ fi
 
 xent_regularize=0.1
 
-
 if [ $stage -le 15 ]; then
   echo "$0: creating neural net configs using the xconfig parser";
 
   num_targets=$(tree-info $tree_dir/tree |grep num-pdfs|awk '{print $2}')
-  learning_rate_factor=$(echo "print 0.5/$xent_regularize" | python)
-  opts="l2-regularize=0.02"
-  output_opts="l2-regularize=0.004"
+  learning_rate_factor=$(echo "print (0.5/$xent_regularize)" | python)
+  affine_opts="l2-regularize=0.01 dropout-proportion=0.0 dropout-per-dim=true dropout-per-dim-continuous=true"
+  tdnnf_opts="l2-regularize=0.01 dropout-proportion=0.0 bypass-scale=0.66"
+  linear_opts="l2-regularize=0.01 orthonormal-constraint=-1.0"
+  prefinal_opts="l2-regularize=0.01"
+  output_opts="l2-regularize=0.002"
 
   mkdir -p $dir/configs
   cat <<EOF > $dir/configs/network.xconfig
   input dim=100 name=ivector
-  input dim=40 name=input
+  input dim=80 name=input
 
   # please note that it is important to have input layer with the name=input
   # as the layer immediately preceding the fixed-affine-layer to enable
@@ -193,31 +191,28 @@ if [ $stage -le 15 ]; then
   fixed-affine-layer name=lda input=Append(-1,0,1,ReplaceIndex(ivector, t, 0)) affine-transform-file=$dir/configs/lda.mat
 
   # the first splicing is moved before the lda layer, so no splicing here
-  relu-batchnorm-layer name=tdnn1 dim=450 $opts
-  relu-batchnorm-layer name=tdnn2 input=Append(-1,0,1) dim=450 $opts
-  relu-batchnorm-layer name=tdnn3 dim=450 $opts
-  relu-batchnorm-layer name=tdnn4 input=Append(-1,0,1) dim=450 $opts
-  relu-batchnorm-layer name=tdnn5 dim=450 $opts
-  relu-batchnorm-layer name=tdnn6 input=Append(-3,0,3) dim=450 $opts
-  relu-batchnorm-layer name=tdnn7 input=Append(-3,0,3) dim=450 $opts
-  relu-batchnorm-layer name=tdnn8 input=Append(-3,0,3) dim=450 $opts
-  relu-batchnorm-layer name=tdnn9 input=Append(-3,0,3) dim=450 $opts
+  relu-batchnorm-dropout-layer name=tdnn1 $affine_opts dim=2136
+  tdnnf-layer name=tdnnf2 $tdnnf_opts dim=2136 bottleneck-dim=210 time-stride=1
+  tdnnf-layer name=tdnnf3 $tdnnf_opts dim=2136 bottleneck-dim=210 time-stride=1
+  tdnnf-layer name=tdnnf4 $tdnnf_opts dim=2136 bottleneck-dim=210 time-stride=1
+  tdnnf-layer name=tdnnf5 $tdnnf_opts dim=2136 bottleneck-dim=210 time-stride=0
+  tdnnf-layer name=tdnnf6 $tdnnf_opts dim=2136 bottleneck-dim=210 time-stride=3
+  tdnnf-layer name=tdnnf7 $tdnnf_opts dim=2136 bottleneck-dim=210 time-stride=3
+  tdnnf-layer name=tdnnf8 $tdnnf_opts dim=2136 bottleneck-dim=210 time-stride=3
+  tdnnf-layer name=tdnnf9 $tdnnf_opts dim=2136 bottleneck-dim=210 time-stride=3
+  tdnnf-layer name=tdnnf10 $tdnnf_opts dim=2136 bottleneck-dim=210 time-stride=3
+  tdnnf-layer name=tdnnf11 $tdnnf_opts dim=2136 bottleneck-dim=210 time-stride=3
+  tdnnf-layer name=tdnnf12 $tdnnf_opts dim=2136 bottleneck-dim=210 time-stride=3
+  tdnnf-layer name=tdnnf13 $tdnnf_opts dim=2136 bottleneck-dim=210 time-stride=3
+  tdnnf-layer name=tdnnf14 $tdnnf_opts dim=2136 bottleneck-dim=210 time-stride=3
+  tdnnf-layer name=tdnnf15 $tdnnf_opts dim=2136 bottleneck-dim=210 time-stride=3
+  linear-component name=prefinal-l dim=512 $linear_opts
 
-  ## adding the layers for chain branch
-  relu-batchnorm-layer name=prefinal-chain input=tdnn9 dim=450 target-rms=0.5 $opts
-  output-layer name=output include-log-softmax=false dim=$num_targets max-change=1.5 $output_opts
+  prefinal-layer name=prefinal-chain input=prefinal-l $prefinal_opts big-dim=2136 small-dim=512
+  output-layer name=output include-log-softmax=false dim=$num_targets $output_opts
 
-  # adding the layers for xent branch
-  # This block prints the configs for a separate output that will be
-  # trained with a cross-entropy objective in the 'chain' models... this
-  # has the effect of regularizing the hidden parts of the model.  we use
-  # 0.5 / args.xent_regularize as the learning rate factor- the factor of
-  # 0.5 / args.xent_regularize is suitable as it means the xent
-  # final-layer learns at a rate independent of the regularization
-  # constant; and the 0.5 was tuned so as to make the relative progress
-  # similar in the xent and regular final layers.
-  relu-batchnorm-layer name=prefinal-xent input=tdnn9 dim=450 target-rms=0.5 $opts
-  output-layer name=output-xent dim=$num_targets learning-rate-factor=$learning_rate_factor max-change=1.5 $output_opts
+  prefinal-layer name=prefinal-xent input=prefinal-l $prefinal_opts big-dim=2136 small-dim=512
+  output-layer name=output-xent dim=$num_targets learning-rate-factor=$learning_rate_factor $output_opts
 
 EOF
 
@@ -239,10 +234,11 @@ if [ $stage -le 16 ]; then
     --chain.l2-regularize 0.00005 \
     --chain.apply-deriv-weights false \
     --chain.lm-opts="--num-extra-lm-states=2000" \
+    --trainer.dropout-schedule $dropout_schedule \
     --egs.dir "$common_egs_dir" \
     --egs.opts "--frames-overlap-per-eg 0" \
     --egs.chunk-width 150 \
-    --trainer.num-chunk-per-minibatch 128 \
+    --trainer.num-chunk-per-minibatch 32 \
     --trainer.frames-per-iter 1500000 \
     --trainer.num-epochs $num_epochs \
     --trainer.optimization.num-jobs-initial 2 \
@@ -251,11 +247,13 @@ if [ $stage -le 16 ]; then
     --trainer.optimization.final-effective-lrate 0.0001 \
     --trainer.max-param-change 2.0 \
     --cleanup.remove-egs $remove_egs \
+    --cleanup.preserve-model-interval 50 \
     --feat-dir $train_data_dir \
     --tree-dir $tree_dir \
     --lat-dir $lat_dir \
     --dir $dir
 fi
+
 
 graph_dir=$dir/graph_${LM}
 if [ $stage -le 17 ]; then

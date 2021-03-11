@@ -12,7 +12,7 @@ nj=30
 nnet3_affix=_cleaned
 final_lm=`cat data/local/lm/final_lm`
 LM=$final_lm.pr1-7
-tdnn_affix=1i
+tdnn_affix=1j
 
 . utils/parse_options.sh
 
