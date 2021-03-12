@@ -14,6 +14,7 @@
 # ./run.sh --mic sdm1
 # ./run.sh --mic mdm8
 mic=ihm
+ami=/scratch/zhy/ASR_Data/AMI
 
 # Train systems,
 nj=60 # number of parallel jobs,
@@ -26,7 +27,7 @@ nmics=$(echo $mic | sed 's/[a-z]//g') # e.g. 8 for mdm8.
 set -euo pipefail
 
 # Path where AMI gets downloaded (or where locally available):
-AMI_DIR=/scratch/zhy/ASR_Data/AMI # Default,
+AMI_DIR=$ami # Default,
 case $(hostname -d) in
   fit.vutbr.cz) AMI_DIR=/mnt/matylda5/iveselyk/KALDI_AMI_WAV ;; # BUT,
   clsp.jhu.edu) AMI_DIR=/export/corpora4/ami/amicorpus ;; # JHU,
@@ -96,6 +97,9 @@ if [ $stage -le 4 ]; then
     utils/fix_data_dir.sh data/$mic/$dset
   done
 fi
+
+echo "training set preprocessing done"
+exit 1
 
 # monophone training
 if [ $stage -le 5 ]; then
