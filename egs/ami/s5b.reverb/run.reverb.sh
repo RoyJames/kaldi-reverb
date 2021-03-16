@@ -86,13 +86,16 @@ fi
 # Modified pipeline begins
 if [ $stage -le 10 ]; then
   echo "== Stage 10 =="
+  # Remove files from previous run which may block the pipeline
+  rm -f exp/ihm/tri3_cleaned_ali_train_cleaned_sp_comb/ali.*.gz
+  rm -f exp/ihm/chain_cleaned/tree_bi/final.mdl
   # The following script cleans the data and produces cleaned data
   # in data/$mic/train_cleaned, and a corresponding system
-  # in exp/$mic/tri3_cleaned.  It also decodes.
+  # in exp/$mic/tri3_cleaned.  It also decodes.  
   #
   # Note: local/run_cleanup_segmentation.sh defaults to using 50 jobs,
   # you can reduce it using the --nj option if you want.
-  local/run_cleanup_segmentation.sh --mic $mic || exit 1
+  local/run_cleanup_segmentation.sh --mic $mic --nj $nj || exit 1
   #local/run_cleanup_segmentation.sh --mic $mic --cleanup_stage 9 || exit 1
 fi
 
