@@ -77,7 +77,7 @@ fi
 # Feature extraction,
 if [ $stage -le 4 ]; then
   for dset in train dev eval; do
-    steps/make_mfcc.sh --nj 15 --cmd "$train_cmd" data/$mic/$dset
+    steps/make_mfcc.sh --nj $nj --cmd "$train_cmd" data/$mic/$dset
     steps/compute_cmvn_stats.sh data/$mic/$dset
     utils/fix_data_dir.sh data/$mic/$dset
   done
