@@ -50,14 +50,6 @@ echo "$0 $@"  # Print the command line for logging
 . ./utils/parse_options.sh
 
 
-if ! cuda-compiled; then
-  cat <<EOF && exit 1
-This script is intended to be used with GPUs but you have not compiled Kaldi with CUDA
-If you want to use GPUs (and have them), go to src/, and configure and make on a machine
-where "nvcc" is installed.
-EOF
-fi
-
 if [ $stage -le 10 ]; then
   local/nnet3/run_ivector_common.sh --stage $stage \
                                     --mic $mic \
@@ -165,6 +157,15 @@ if [ $stage -le 14 ]; then
       --context-opts "--context-width=2 --central-position=1" \
       --leftmost-questions-truncate -1 \
       --cmd "$train_cmd" 4200 ${lores_train_data_dir} data/lang_chain $ali_dir $tree_dir
+fi
+
+
+if ! cuda-compiled; then
+  cat <<EOF && exit 1
+This script is intended to be used with GPUs but you have not compiled Kaldi with CUDA
+If you want to use GPUs (and have them), go to src/, and configure and make on a machine
+where "nvcc" is installed.
+EOF
 fi
 
 xent_regularize=0.1
