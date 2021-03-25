@@ -33,6 +33,11 @@ fi
 #fi
 rirdir=
 
+# number of jobs for feature extraction and model training
+nj=64
+# number of jobs for decoding
+decode_nj=64
+
 . ./cmd.sh
 . ./path.sh
 
@@ -73,10 +78,6 @@ test_sets="dt_cln et_cln dt_real_1ch et_real_1ch dt_simu_1ch et_simu_1ch"
 # The language models with which to decode (tg_5k or bg_5k)
 lm="tg_5k"
 
-# number of jobs for feature extraction and model training
-nj=92
-# number of jobs for decoding
-decode_nj=10
 
 wavdir=${PWD}/wav
 pesqdir=${PWD}/local
