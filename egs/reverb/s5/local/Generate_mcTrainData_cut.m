@@ -36,7 +36,8 @@ flist1='etc/audio_si_tr.lst';
 %
 % List of RIRs
 %
-RIR_List = dir(strcat(RIR_dir, '/*.wav'));
+RIR_List = dir(fullfile(RIR_dir, '**/*.wav'));
+
 num_RIRvar=length(RIR_List);
 
 %
