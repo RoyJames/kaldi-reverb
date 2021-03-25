@@ -31,6 +31,7 @@ fi
 #  echo "Install matlab, which is used to generate multi-condition data"
 #  exit 1
 #fi
+rirdir=
 
 . ./cmd.sh
 . ./path.sh
@@ -82,7 +83,7 @@ pesqdir=${PWD}/local
 if [ ${stage} -le 1 ]; then
   # data preparation
   echo "stage 0: Data preparation"
-  local/generate_data.sh --wavdir ${wavdir} ${wsjcam0}
+  local/generate_data.sh --rirdir ${rirdir} --wavdir ${wavdir} ${wsjcam0}
   local/prepare_simu_data.sh --wavdir ${wavdir} ${reverb} ${wsjcam0}
   local/prepare_real_data.sh --wavdir ${wavdir} ${reverb}
 fi

@@ -7,7 +7,7 @@
 
 # Begin configuration section.
 wavdir=${PWD}/wav
-rirdir=${PWD}/local/sub_samples
+rirdir=
 # End configuration section
 
 . ./utils/parse_options.sh  # accept options.. you can run this run.sh with the
