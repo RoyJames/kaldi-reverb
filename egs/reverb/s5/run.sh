@@ -32,6 +32,7 @@ fi
 #  exit 1
 #fi
 rirdir=
+tdnn_stage=0
 
 # number of jobs for feature extraction and model training
 nj=64
@@ -186,7 +187,7 @@ fi
 
 if [ $stage -le 13 ]; then
   # chain TDNN
-  local/chain/run_tdnn.sh --nj ${nj} --train-set ${train_set} --test-sets "$test_sets" --gmm tri3 --nnet3-affix _${train_set} \
+  local/chain/run_tdnn.sh --stage ${tdnn_stage} --nj ${nj} --train-set ${train_set} --test-sets "$test_sets" --gmm tri3 --nnet3-affix _${train_set} \
   --lm-suffix _test_$lm
 fi
 
