@@ -148,7 +148,7 @@ end
 
 % make sure noise is longer than signal
 while size(NOISE,1) < size(rev_y,1)
-    NOISE=repmat(NOISE,2,1)
+    NOISE=repmat(NOISE,2,1);
 end
 
 % normalize noise data according to the prefixed SNR value
