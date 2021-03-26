@@ -146,6 +146,11 @@ for ch=1:8
     rev_y(:,ch)=fconv(x,RIR(:,ch));
 end
 
+% make sure noise is longer than signal
+while size(NOISE,1) < size(rev_y,1)
+    NOISE=repmat(NOISE,2,1)
+end
+
 % normalize noise data according to the prefixed SNR value
 NOISE=NOISE(1:size(rev_y,1),:);
 NOISE_ref=NOISE(:,1);
