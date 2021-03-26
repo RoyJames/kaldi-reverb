@@ -94,6 +94,9 @@ for nlist=1:1
         
         % load RIR and noise for "THIS" utterance
         RIR=audioread(strcat(RIR_List(rcount).folder,'/',RIR_List(rcount).name));
+	if size(RIR,2) ~= 8
+	    RIR=repmat(RIR(:,1), 1, 8);
+	end
         eval(['NOISE=audioread([noise_sim',num2str(mod(floor(rcount/4), num_NOISEvar)+1),',''_',num2str(ncount),'.wav'']);']);
 
         % Generate 8ch noisy reverberant data        
