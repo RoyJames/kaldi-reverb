@@ -195,7 +195,7 @@ if [ $stage -le 14 ]; then
     --chain.lm-opts="--num-extra-lm-states=2000" \
     --trainer.srand=$srand \
     --trainer.max-param-change=2.0 \
-    --trainer.num-epochs=20 \
+    --trainer.num-epochs=40 \
     --trainer.frames-per-iter=3000000 \
     --trainer.optimization.num-jobs-initial=2 \
     --trainer.optimization.num-jobs-final=2 \
