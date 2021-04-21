@@ -4,7 +4,7 @@ REVERB
 The `egs/reverb/s5` contains the modified recipe. The original script uses a fixed set of 24 room impulse responses to create reverberant data using Matlab. This script replaces this step by letting Matlab use external impulse responses. 
 
 ## Inctructions to run REVERB Kaldi recipe for custom impulse responses:
-0) remove `s5/data` to prevent previous data from interferring with your new run
+0) edit `egs/reverb/s5/run.sh` to set the value for `reverb`, `wsjcam0` and`wjs0`, which you must obtain by yourself
 1) go to folder `egs/reverb/s5`, run the recipe by providing your folder path <path_to_rir> that contains custom impulse responses:
 
         ./run.sh --rirdir <path_to_rir>
