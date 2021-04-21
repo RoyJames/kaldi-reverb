@@ -1,68 +1,19 @@
-[![Build Status](https://travis-ci.com/kaldi-asr/kaldi.svg?branch=master)](https://travis-ci.com/kaldi-asr/kaldi)
-[![Gitpod Ready-to-Code](https://img.shields.io/badge/Gitpod-Ready--to--Code-blue?logo=gitpod)](https://gitpod.io/#https://github.com/kaldi-asr/kaldi) 
-Kaldi Speech Recognition Toolkit
+AMI
 ================================
 
-To build the toolkit: see `./INSTALL`.  These instructions are valid for UNIX
-systems including various flavors of Linux; Darwin; and Cygwin (has not been
-tested on more "exotic" varieties of UNIX).  For Windows installation
-instructions (excluding Cygwin), see `windows/INSTALL`.
+The `egs/ami/s5b.reverb` contains the modified recipe, which are created according to the documents of [BUT ReverbDB](https://speech.fit.vutbr.cz/software/but-speech-fit-reverb-database).
 
-To run the example system builds, see `egs/README.txt`
+## Inctructions to run AMI Kaldi recipe for reverberated data:
+1) run the baseline s5b recipe for AMI with ihm data:
 
-If you encounter problems (and you probably will), please do not hesitate to
-contact the developers (see below). In addition to specific questions, please
-let us know if there are specific aspects of the project that you feel could be
-improved, that you find confusing, etc., and which missing features you most
-wish it had.
+        s5b/run.sh --mic ihm
+   the script in s5b.reverb will later look for trained models under `s5b/exp/ihm`
+2) run the baseline s5b recipe for AMI with sdm data, and you may stop before training the network to save time:
 
-Kaldi information channels
---------------------------
+        s5b/run.sh --mic sdm1
+   copy `s5b/data/sdm1/dev_hires` and `s5b/data/sdm1/eval_hires` to `s5b.reverb/data/sdm1/`, which will be used for testing
+4) externally convolve/reverberate the AMI speech using your custom impulse responses and store the new reverberant AMI directory at <path_to_dir>
+5) swithc to folder `s5b.reverb`, in `run.reverb.sh`, set the location of the directory where reverberated AMI data are stored:
 
-For HOT news about Kaldi see [the project site](http://kaldi-asr.org/).
-
-[Documentation of Kaldi](http://kaldi-asr.org/doc/):
-- Info about the project, description of techniques, tutorial for C++ coding.
-- Doxygen reference of the C++ code.
-
-[Kaldi forums and mailing lists](http://kaldi-asr.org/forums.html):
-
-We have two different lists
-- User list kaldi-help
-- Developer list kaldi-developers:
-
-To sign up to any of those mailing lists, go to
-[http://kaldi-asr.org/forums.html](http://kaldi-asr.org/forums.html):
-
-
-Development pattern for contributors
-------------------------------------
-
-1. [Create a personal fork](https://help.github.com/articles/fork-a-repo/)
-   of the [main Kaldi repository](https://github.com/kaldi-asr/kaldi) in GitHub.
-2. Make your changes in a named branch different from `master`, e.g. you create
-   a branch `my-awesome-feature`.
-3. [Generate a pull request](https://help.github.com/articles/creating-a-pull-request/)
-   through the Web interface of GitHub.
-4. As a general rule, please follow [Google C++ Style Guide](https://google.github.io/styleguide/cppguide.html).
-   There are a [few exceptions in Kaldi](http://kaldi-asr.org/doc/style.html).
-   You can use the [Google's cpplint.py](https://raw.githubusercontent.com/google/styleguide/gh-pages/cpplint/cpplint.py)
-   to verify that your code is free of basic mistakes.
-
-Platform specific notes
------------------------
-
-### PowerPC 64bits little-endian (ppc64le)
-
-- Kaldi is expected to work out of the box in RHEL >= 7 and Ubuntu >= 16.04 with
-  OpenBLAS, ATLAS, or CUDA.
-- CUDA drivers for ppc64le can be found at [https://developer.nvidia.com/cuda-downloads](https://developer.nvidia.com/cuda-downloads).
-- An [IBM Redbook](https://www.redbooks.ibm.com/abstracts/redp5169.html) is
-  available as a guide to install and configure CUDA.
-
-### Android
-
-- Kaldi supports cross compiling for Android using Android NDK, clang++ and
-  OpenBLAS.
-- See [this blog post](http://jcsilva.github.io/2017/03/18/compile-kaldi-android/)
-  for details.
+        run.reverb.sh --nj 32 --mic ihm --ami <path_to_dir>
+5) run `local/get_results.sh` to see WERs
