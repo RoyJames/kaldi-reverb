@@ -16,7 +16,7 @@ Branches available
 - ami
 - reverb
 
-Room Impulse Responses
+Finding room impulse responses
 ------------
 We have compiled a list of publically available RIRs in [this repo](https://github.com/RoyJames/room-impulse-responses). You may also generate synthetic RIRs using simulators such as [pygsound](https://github.com/RoyJames/pygsound).
 
