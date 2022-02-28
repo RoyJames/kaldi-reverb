@@ -23,6 +23,7 @@ set -e -o pipefail
 stage=0
 mic=ihm
 nj=30
+ngpu=2
 min_seg_len=1.55
 use_ihm_ali=false
 train_set=train_cleaned
@@ -243,7 +244,7 @@ if [ $stage -le 16 ]; then
     --trainer.frames-per-iter 1500000 \
     --trainer.num-epochs $num_epochs \
     --trainer.optimization.num-jobs-initial 2 \
-    --trainer.optimization.num-jobs-final 4 \
+    --trainer.optimization.num-jobs-final $ngpu \
     --trainer.optimization.initial-effective-lrate 0.001 \
     --trainer.optimization.final-effective-lrate 0.0001 \
     --trainer.max-param-change 2.0 \

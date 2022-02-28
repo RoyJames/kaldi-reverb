@@ -17,7 +17,8 @@ mic=ihm
 ami=/scratch/zhy/ASR_Data/AMI
 
 # Train systems,
-nj=60 # number of parallel jobs,
+nj=60 # number of parallel jobs
+ngpu=2 # number of GPUs to use
 stage=1
 tdnn_stage=0
 . utils/parse_options.sh
@@ -104,7 +105,7 @@ if [ $stage -le 11 ]; then
   echo "== Stage 11 =="
   ali_opt=
   [ "$mic" != "ihm" ] && ali_opt="--use-ihm-ali true"
-  local/chain/run_tdnn.sh $ali_opt --mic $mic --stage $tdnn_stage --train_stage -10 || exit 1
+  local/chain/run_tdnn.sh $ali_opt --mic $mic --stage $tdnn_stage --train_stage -10 --ngpu $ngpu || exit 1
 fi
 
 if [ $stage -le 12 ]; then
