@@ -21,6 +21,7 @@ nj=60 # number of parallel jobs
 ngpu=2 # number of GPUs to use
 stage=1
 tdnn_stage=0
+train_stage=-10
 . utils/parse_options.sh
 
 base_mic=$(echo $mic | sed 's/[0-9]//g') # sdm, ihm or mdm
@@ -105,7 +106,7 @@ if [ $stage -le 11 ]; then
   echo "== Stage 11 =="
   ali_opt=
   [ "$mic" != "ihm" ] && ali_opt="--use-ihm-ali true"
-  local/chain/run_tdnn.sh $ali_opt --mic $mic --stage $tdnn_stage --train_stage -10 --ngpu $ngpu || exit 1
+  local/chain/run_tdnn.sh $ali_opt --mic $mic --stage $tdnn_stage --train_stage $train_stage --ngpu $ngpu || exit 1
 fi
 
 if [ $stage -le 12 ]; then
