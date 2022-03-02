@@ -14,6 +14,7 @@ import logging
 import math
 import os
 import sys
+import time
 
 import libs.common as common_lib
 import libs.nnet3.train.common as common_train_lib
@@ -228,7 +229,7 @@ def train_new_models(dir, iter, srand, num_jobs,
                         multitask_egs_opts=multitask_egs_opts,
                         scp_or_ark=scp_or_ark),
             require_zero_status=True)
-
+        time.sleep(1.0) # wait for a second before spawning next job to avoid GPU race
         threads.append(thread)
 
     for thread in threads:
