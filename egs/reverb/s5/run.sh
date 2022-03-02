@@ -132,7 +132,7 @@ if [ $stage -le 6 ]; then
   # Extract MFCC features for train and test sets.
   mfccdir=mfcc
   for x in ${train_set} ${test_sets}; do
-   steps/make_mfcc.sh --cmd "$train_cmd" --nj 30 \
+   steps/make_mfcc.sh --cmd "$train_cmd" --nj $nj \
      data/$x exp/make_mfcc/$x $mfccdir
    steps/compute_cmvn_stats.sh data/$x exp/make_mfcc/$x $mfccdir
   done
