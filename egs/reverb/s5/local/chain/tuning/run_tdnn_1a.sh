@@ -6,6 +6,7 @@ set -euo pipefail
 # First the options that are passed through to run_ivector_common.sh
 # (some of which are also used in this script directly).
 stage=0
+ngpu=1
 nj=96
 train_set=tr_simu_8ch
 test_sets="dt_real_1ch dt_simu_1ch et_real_1ch et_simu_1ch"
@@ -197,8 +198,8 @@ if [ $stage -le 14 ]; then
     --trainer.max-param-change=2.0 \
     --trainer.num-epochs=40 \
     --trainer.frames-per-iter=3000000 \
-    --trainer.optimization.num-jobs-initial=2 \
-    --trainer.optimization.num-jobs-final=2 \
+    --trainer.optimization.num-jobs-initial=$ngpu \
+    --trainer.optimization.num-jobs-final=$ngpu \
     --trainer.optimization.initial-effective-lrate=0.001 \
     --trainer.optimization.final-effective-lrate=0.0001 \
     --trainer.optimization.shrink-value=1.0 \

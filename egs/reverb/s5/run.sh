@@ -38,11 +38,11 @@ tdnn_stage=0
 nj=64
 # number of jobs for decoding
 decode_nj=64
+stage=0
 
 . ./cmd.sh
 . ./path.sh
 
-stage=0
 nch_se=8
 # flag for turing on computation of dereverberation measures
 compute_se=false
