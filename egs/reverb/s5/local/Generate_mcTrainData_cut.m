@@ -93,7 +93,10 @@ for nlist=1:1
         x=audioread([WSJ_dir_name, '/data/', fname, '.wav'])';
         
         % load RIR and noise for "THIS" utterance
-        RIR=audioread(strcat(RIR_List(rcount).folder,'/',RIR_List(rcount).name));
+        [RIR, fs]=audioread(strcat(RIR_List(rcount).folder,'/',RIR_List(rcount).name));
+	if fs ~= 16000
+	    RIR=resample(RIR, 16000, fs);
+        end
 	if size(RIR,2) ~= 8
 	    RIR=repmat(RIR(:,1), 1, 8);
 	end
@@ -138,7 +141,7 @@ x=x';
 [val,delay]=max(RIR(:,1));
 before_impulse=floor(16000*0.001);
 after_impulse=floor(16000*0.05);
-RIR_direct=RIR(max(delay-before_impulse,1):delay+after_impulse,1);
+RIR_direct=RIR(max(delay-before_impulse,1):min(delay+after_impulse,size(RIR,1)),1);
 direct_signal=fconv(x,RIR_direct);
 
 % obtain reverberant speech
