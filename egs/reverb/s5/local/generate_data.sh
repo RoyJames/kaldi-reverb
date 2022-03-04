@@ -39,8 +39,10 @@ if [ -e $dir/reverb_tools_for_Generate_mcTrainData/run_mat.m ]; then
 fi
 
 # Download tools
-URL1="http://reverb2014.dereverberation.com/tools/reverb_tools_for_Generate_mcTrainData.tgz"
-URL2="http://reverb2014.dereverberation.com/tools/REVERB_TOOLS_FOR_ASR_ver2.0.tgz"
+#URL1="http://reverb2014.dereverberation.com/tools/reverb_tools_for_Generate_mcTrainData.tgz"
+#URL2="http://reverb2014.dereverberation.com/tools/REVERB_TOOLS_FOR_ASR_ver2.0.tgz"
+URL1="https://obj.umiacs.umd.edu/scratch/transfer/REVERB_exp/reverb_tools_for_Generate_mcTrainData.tgz"
+URL2="https://obj.umiacs.umd.edu/scratch/transfer/REVERB_exp/REVERB_TOOLS_FOR_ASR_ver2.0.tgz"
 for f in $URL1 $URL2; do
     x=`basename $f`
     if [ ! -e $dir/$x ]; then
@@ -48,7 +50,8 @@ for f in $URL1 $URL2; do
 	tar zxvf $dir/$x -C $dir || exit 1;
     fi
 done
-URL3="http://reverb2014.dereverberation.com/tools/taskFiles_et.tgz"
+#URL3="http://reverb2014.dereverberation.com/tools/taskFiles_et.tgz"
+URL3="https://obj.umiacs.umd.edu/scratch/transfer/REVERB_exp/taskFiles_et.tgz"
 x=`basename $URL3`
 if [ ! -e $dir/$x ]; then
     wget $URL3 -O $dir/$x || exit 1;
