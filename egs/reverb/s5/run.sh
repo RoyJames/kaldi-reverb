@@ -195,5 +195,5 @@ fi
 
 # get all WERs. 
 if [ $stage -le 14 ]; then
-  local/get_results.sh
+  local/get_results.sh ${train_set}
 fi
