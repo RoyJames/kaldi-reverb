@@ -25,7 +25,7 @@ odir=data/ihm/${SET}_orig
 mkdir -p $dir
 
 # Audio data directory check
-if [ ! -d $AMI_DIR ]; then
+if [ ! -d $AMI_DIR/ ]; then
   echo "Error: run.sh requires a directory argument"
   exit 1;
 fi
@@ -40,7 +40,7 @@ fi
 # the files in the corpora and filter only specific sessions
 # while building segments
 
-find $AMI_DIR -iname '*.Headset-*.wav' | sort > $dir/wav.flist
+find $AMI_DIR/ -iname '*.Headset-*.wav' | sort > $dir/wav.flist
 n=`cat $dir/wav.flist | wc -l`
 echo "In total, $n headset files were found."
 [ $n -ne 687 ] && \

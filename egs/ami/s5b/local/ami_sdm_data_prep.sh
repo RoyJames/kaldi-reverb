@@ -32,7 +32,7 @@ odir=data/$DSET/train_orig
 mkdir -p $dir
 
 # Audio data directory check
-if [ ! -d $AMI_DIR ]; then
+if [ ! -d $AMI_DIR/ ]; then
   echo "Error: run.sh requires a directory argument"
   exit 1;
 fi
@@ -44,7 +44,7 @@ if [ ! -f $SEGS ]; then
 fi
 
 # as the sdm we treat first mic from the array
-find $AMI_DIR -iname "*.Array1-0$MICNUM.wav" | sort > $dir/wav.flist
+find $AMI_DIR/ -iname "*.Array1-0$MICNUM.wav" | sort > $dir/wav.flist
 
 n=`cat $dir/wav.flist | wc -l`
 

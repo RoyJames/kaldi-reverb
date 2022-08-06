@@ -27,8 +27,8 @@ odir=data/ihm/train_orig
 mkdir -p $dir
 
 # Audio data directory check
-if [ ! -d $AMI_DIR ]; then
-  echo "Error: $AMI_DIR directory does not exists."
+if [ ! -d $AMI_DIR/ ]; then
+  echo "Error: $AMI_DIR/ directory does not exists."
   exit 1;
 fi
 
@@ -40,7 +40,7 @@ fi
 
 
 # find headset wav audio files only
-find $AMI_DIR -iname '*.Headset-*.wav' | sort > $dir/wav.flist
+find $AMI_DIR/ -iname '*.Headset-*.wav' | sort > $dir/wav.flist
 n=`cat $dir/wav.flist | wc -l`
 echo "In total, $n headset files were found."
 [ $n -ne 687 ] && \
