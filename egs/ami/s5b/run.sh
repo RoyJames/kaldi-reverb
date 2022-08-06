@@ -39,8 +39,8 @@ LM=$final_lm.pr1-7
 
 # Download AMI corpus, You need around 130GB of free space to get whole data ihm+mdm,
 if [ $stage -le 0 ]; then
-  if [ -d $AMI_DIR ] && ! touch $AMI_DIR/.foo 2>/dev/null; then
-    echo "$0: directory $AMI_DIR seems to exist and not be owned by you."
+  if [ -d $AMI_DIR/ ] && ! touch $AMI_DIR/.foo 2>/dev/null; then
+    echo "$0: directory $AMI_DIR/ seems to exist and not be owned by you."
     echo " ... Assuming the data does not need to be downloaded.  Please use --stage 1 or more."
     exit 1
   fi
@@ -57,7 +57,7 @@ if [ "$base_mic" == "mdm" ]; then
   if [ $stage -le 1 ]; then
     # for MDM data, do beamforming
     ! hash BeamformIt && echo "Missing BeamformIt, run 'cd ../../../tools/; extras/install_beamformit.sh; cd -;'" && exit 1
-    local/ami_beamform.sh --cmd "$train_cmd" --nj 20 $nmics $AMI_DIR $PROCESSED_AMI_DIR
+    local/ami_beamform.sh --cmd "$train_cmd" --nj 20 $nmics $AMI_DIR/ $PROCESSED_AMI_DIR
   fi
 else
   PROCESSED_AMI_DIR=$AMI_DIR
@@ -65,9 +65,9 @@ fi
 
 # Prepare original data directories data/ihm/train_orig, etc.
 if [ $stage -le 2 ]; then
-  local/ami_${base_mic}_data_prep.sh $PROCESSED_AMI_DIR $mic
-  local/ami_${base_mic}_scoring_data_prep.sh $PROCESSED_AMI_DIR $mic dev
-  local/ami_${base_mic}_scoring_data_prep.sh $PROCESSED_AMI_DIR $mic eval
+  local/ami_${base_mic}_data_prep.sh $PROCESSED_AMI_DIR/ $mic
+  local/ami_${base_mic}_scoring_data_prep.sh $PROCESSED_AMI_DIR/ $mic dev
+  local/ami_${base_mic}_scoring_data_prep.sh $PROCESSED_AMI_DIR/ $mic eval
 fi
 
 if [ $stage -le 3 ]; then

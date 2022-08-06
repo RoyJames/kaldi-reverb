@@ -27,7 +27,7 @@ dir=data/$mic/${SET}_orig
 mkdir -p $tmpdir
 
 # Audio data directory check
-if [ ! -d $AMI_DIR ]; then
+if [ ! -d $AMI_DIR/ ]; then
   echo "Error: run.sh requires a directory argument"
   exit 1;
 fi
@@ -39,7 +39,7 @@ if [ ! -f $SEGS ]; then
 fi
 
 # find selected mdm wav audio files only
-find $AMI_DIR -iname "*${mic}.wav" | sort > $tmpdir/wav.flist
+find $AMI_DIR/ -iname "*${mic}.wav" | sort > $tmpdir/wav.flist
 n=`cat $tmpdir/wav.flist | wc -l`
 if [ $n -ne 169 ]; then
   echo "Warning. Expected to find 169 files but found $n."

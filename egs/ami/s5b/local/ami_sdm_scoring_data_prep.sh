@@ -33,7 +33,7 @@ dir=data/$DSET/${SET}_orig
 mkdir -p $tmpdir
 
 # Audio data directory check
-if [ ! -d $AMI_DIR ]; then
+if [ ! -d $AMI_DIR/ ]; then
   echo "Error: run.sh requires a directory argument"
   exit 1;
 fi
@@ -48,7 +48,7 @@ fi
 # the files in the corpora and filter only specific sessions
 # while building segments
 
-find $AMI_DIR -iname "*.Array1-0$MICNUM.wav" | sort > $tmpdir/wav.flist
+find $AMI_DIR/ -iname "*.Array1-0$MICNUM.wav" | sort > $tmpdir/wav.flist
 
 n=`cat $tmpdir/wav.flist | wc -l`
 echo "In total, $n files were found."
