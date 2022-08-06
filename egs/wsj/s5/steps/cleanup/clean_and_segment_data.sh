@@ -188,8 +188,12 @@ fi
 
 if [ $stage -le 9 ]; then
   # use the baseline segmentation
-  cp -rf ../s5b/exp/ihm/tri3_cleaned_work/segments exp/ihm/tri3_cleaned_work
-  cp -rf ../s5b/exp/ihm/tri3_cleaned_work/text exp/ihm/tri3_cleaned_work
+  CURRENT_DIR=$(basename $(pwd))
+  if [ "$CURRENT_DIR" != "s5b" ]
+  then
+      cp -rf ../s5b/exp/ihm/tri3_cleaned_work/segments exp/ihm/tri3_cleaned_work
+      cp -rf ../s5b/exp/ihm/tri3_cleaned_work/text exp/ihm/tri3_cleaned_work
+  fi
 fi
 
 if [ $stage -le 9 ]; then
